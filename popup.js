@@ -52,13 +52,17 @@ navigator.geolocation.getCurrentPosition(position => {
               let t_cel = Math.floor(w.main.temp - 273);
               let h = "<h5>" + t_cel + "<span>&deg;C</span></h5>";
 
+              //icon url
               let url = `http://openweathermap.org/img/wn/${w.weather[0].icon}@2x.png`;
               icon.src = url;
+
+              //to get time of the particular forecast
               let date = new Date(w.dt_txt);
               let day = "<h4>" + days[date.getDay()] + "</h4>";
               let time = date.getHours() + ":00 hrs";
               let timeHtml = "<h5>" + time + "</h5>";
 
+              //append to card
               $(card).append(day);
               $(card).append(icon);
               $(card).append(h);
@@ -66,19 +70,25 @@ navigator.geolocation.getCurrentPosition(position => {
               $weatherButtons.append(card);
               i++;
             });
+            //when all cards are displayed
             if (i >= 39) {
+              //first card is always selected initially
               $("#0").addClass("selected");
               let item = weather[0];
 
+              //details to be appended to the "#weather div"
               let icon = document.createElement("img");
               icon.setAttribute("class", "icon-info");
               let url = `http://openweathermap.org/img/wn/${item.weather[0].icon}@2x.png`;
               icon.src = url;
 
+              //temperature in celcius
               let min_temp = Math.floor(item.main.temp_min - 273);
               let max_temp = Math.floor(item.main.temp_max - 273);
               let html = document.createElement("div");
               html.setAttribute("id", "weather");
+
+              //innHtml - html to be added inside weather div
               let innHtml =
                 "<h5>Min Temp:   " +
                 min_temp +
@@ -95,6 +105,8 @@ navigator.geolocation.getCurrentPosition(position => {
                 item.weather[0].description +
                 "</h5>";
               $(html).append(innHtml);
+
+              //append to info div
               $info.append(icon);
               $info.append(html);
             }
@@ -107,29 +119,39 @@ navigator.geolocation.getCurrentPosition(position => {
     });
 });
 
+//call check() - for when another weather-button is clicked
 check();
+
 function check() {
   if ($("button").is(":visible")) {
+    //only if all buttons are visible - go to the below function
     $("button").click(function() {
+      //remove selected class from all buttons
       $("button").removeClass("selected");
+
+      //add selected class only to the current button
       $(this).addClass("selected");
+
       let id = parseInt(this.id);
       let item = weather[id];
 
       $("#weather").remove();
       $(".icon-info").remove();
-
+      //details to be appended to the "#weather div"
       let icon = document.createElement("img");
       icon.setAttribute("class", "icon-info");
       let url = `http://openweathermap.org/img/wn/${item.weather[0].icon}@2x.png`;
       icon.src = url;
+
+      //temperature in celcius
+      let min_temp = Math.floor(item.main.temp_min - 273);
+      let max_temp = Math.floor(item.main.temp_max - 273);
       let html = document.createElement("div");
       html.setAttribute("id", "weather");
 
-      let min_temp = Math.floor(item.main.temp_min - 273);
-      let max_temp = Math.floor(item.main.temp_max - 273);
+      //innHtml - html to be added inside weather div
       let innHtml =
-        "<h5>Min Temp: " +
+        "<h5>Min Temp:   " +
         min_temp +
         "<span>&deg;C</span>&emsp;Max Temp: " +
         max_temp +
@@ -144,11 +166,14 @@ function check() {
         item.weather[0].description +
         "</h5>";
       $(html).append(innHtml);
+
+      //append to info div
       $info.append(icon);
       $info.append(html);
     });
     return;
   } else {
+    //if no buttons are visible - wait for 50 milliseconds
     setTimeout(check, 50);
   }
 }
